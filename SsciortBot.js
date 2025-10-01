@@ -3,6 +3,19 @@ const qrcode = require('qrcode-terminal');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const fs = require('fs');
 const path = require('path');
+const express = require('express'); // Nuovo: server per ping
+
+// =====================
+// Server HTTP minimale
+// =====================
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+    res.send('🤖 SsciortBot attivo!');
+});
+
+app.listen(PORT, () => console.log(`Server di ping attivo su porta ${PORT}`));
 
 // Initialize uptime tracking
 const startTime = Date.now();
