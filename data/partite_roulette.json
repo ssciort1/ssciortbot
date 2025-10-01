@@ -1,0 +1,24 @@
+{
+  "120363423664616339@g.us": {
+    "sfidante": "16209290481885@lid",
+    "sfidato": "393895485784@c.us",
+    "sfidanteNome": "Gio",
+    "sfidatoNome": "ֆզʊǟʟօ #ᵒᶜᵉᵃⁿ",
+    "stato": "in_gioco",
+    "timestamp": 1758982805926,
+    "tamburo": [
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false
+    ],
+    "posizione": 1,
+    "turno": "393895485784@c.us",
+    "proiettiliVeri": 1,
+    "doveSparare": null
+  }
+}
