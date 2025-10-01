@@ -1,3 +1,2 @@
-2025/09/30-10:38:38.123 7894 Reusing MANIFEST C:\Users\mugav\VsCode Giova\GiovaBot\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
-2025/09/30-10:38:38.124 7894 Recovering log #62
-2025/09/30-10:38:38.125 7894 Reusing old log C:\Users\mugav\VsCode Giova\GiovaBot\.wwebjs_auth\session\Default\Local Storage\leveldb/000062.log 
+2025/10/01-17:37:20.949 10cc Creating DB C:\Users\sscio\Documents\materiale_scuola\bot_whatsapp\ssciortbot-clean\.wwebjs_auth\session\Default\Local Storage\leveldb since it was missing.
+2025/10/01-17:37:20.964 10cc Reusing MANIFEST C:\Users\sscio\Documents\materiale_scuola\bot_whatsapp\ssciortbot-clean\.wwebjs_auth\session\Default\Local Storage\leveldb/MANIFEST-000001
