@@ -106,6 +106,7 @@ client.on('ready', async () => {
     setTimeout(async () => {
         await sendStartupMessage();
     }, 1000);
+    startScheduledMessage();
 });
 
 // Funzione per inviare messaggio di avvio
@@ -200,6 +201,35 @@ function startHomeworkReminder() {
         }
     }, 40000);
 }
+
+// ============================
+// Messaggio programmato a un contatto
+// ============================
+function startScheduledMessage() {
+    setInterval(async () => {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+
+        // Imposta qui l'ora e i minuti (es: 18:30)
+        if (hours === 13 && minutes === 30) {
+            await sendScheduledMessage();
+        }
+    }, 40000); // controlla ogni 40 secondi
+}
+
+async function sendScheduledMessage() {
+    const CONTACT_ID = '393286287755@c.us'; // numero WhatsApp nel formato internazionale
+    const message = `🌇 Buonasera! Questo è un messaggio automatico inviato alle 13:30.`;
+
+    try {
+        await client.sendMessage(CONTACT_ID, message);
+        console.log(`Messaggio programmato inviato a ${CONTACT_ID}`);
+    } catch (error) {
+        console.error('Errore invio messaggio programmato:', error);
+    }
+}
+
 
 async function sendHomeworkReminder() {
     const COMPITI_FILE = path.join(__dirname, 'data', 'compiti.json');
