@@ -33,17 +33,28 @@ app.post('/sendPHP', async (req, res) => {
         }
 
         // ✅ Verifica token di sicurezza
+        // Costruzione stringa
+        const str = (phone + SECRET_PHRASE + text).trim(); // trim per eliminare spazi invisibili
+
+        // Calcolo hash MD5 in binario
+        const md5Binary = crypto.createHash('md5').update(str, 'utf8').digest(); // buffer binario
+
+        // Converti in base64
+        const miotoken = md5Binary.toString('base64');
+
+/*
         const expectedHash = crypto.createHash('md5').update(phone + SECRET_PHRASE + (text || '')).digest('hex');
         const expectedToken = Buffer.from(expectedHash).toString('base64');
-/*
+*/
+        /*
         if (token !== expectedToken) {
             console.warn('Tentativo di accesso non autorizzato!');
             return res.status(403).json({ success: false, error: 'Token non valido.' });
         }
 */
-        if (token !== expectedToken) {
-            const debugString = phone + SECRET_PHRASE + (text || '');
-            const md5Hex = crypto.createHash('md5').update(debugString).digest('hex');
+        if (token !== miotoken) {
+            //const debugString = phone + SECRET_PHRASE + (text || '');
+            //const md5Hex = crypto.createHash('md5').update(debugString).digest('hex');
 
             console.warn('⚠️ Tentativo di accesso non autorizzato!');
             console.warn('👉 Stringa usata per hash:', debugString);
@@ -55,9 +66,8 @@ app.post('/sendPHP', async (req, res) => {
                 success: false,
                 error: 'Token non valido.',
                 debug: {
-                    stringa_hash: debugString,
-                    md5_hex: md5Hex,
-                    expected_token: expectedToken,
+                    jsToken: md5Binary,
+                    jsToken64: miotoken,
                     received_token: token,
                     token_chiaro: token_chiaro
                 }
