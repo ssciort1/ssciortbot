@@ -35,12 +35,33 @@ app.post('/sendPHP', async (req, res) => {
         // ✅ Verifica token di sicurezza
         const expectedHash = crypto.createHash('md5').update(phone + SECRET_PHRASE + (text || '')).digest('hex');
         const expectedToken = Buffer.from(expectedHash).toString('base64');
-
+/*
         if (token !== expectedToken) {
             console.warn('Tentativo di accesso non autorizzato!');
             return res.status(403).json({ success: false, error: 'Token non valido.' });
         }
+*/
+        if (token !== expectedToken) {
+            const debugString = phone + SECRET_PHRASE + (text || '');
+            const md5Hex = crypto.createHash('md5').update(debugString).digest('hex');
 
+            console.warn('⚠️ Tentativo di accesso non autorizzato!');
+            console.warn('👉 Stringa usata per hash:', debugString);
+            console.warn('👉 Hash MD5 calcolato:', md5Hex);
+            console.warn('👉 Token atteso (base64):', expectedToken);
+            console.warn('👉 Token ricevuto:', token);
+
+            return res.status(403).json({
+                success: false,
+                error: 'Token non valido.',
+                debug: {
+                    stringa_hash: debugString,
+                    md5_hex: md5Hex,
+                    expected_token: expectedToken,
+                    received_token: token
+                }
+            });
+        }
         const chatId = phone.replace(/\D/g, '') + '@c.us';
 
         // === Caso 1: messaggio con immagine ===
