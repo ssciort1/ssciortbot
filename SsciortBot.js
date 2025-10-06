@@ -56,6 +56,7 @@ app.post('/sendPHP', async (req, res) => {
         const chatId = phone.replace(/\D/g, '') + '@c.us';
 
         // === Caso 1: messaggio con immagine ===
+        /*
         if (image) {
             let media;
 
@@ -74,7 +75,36 @@ app.post('/sendPHP', async (req, res) => {
             console.log(`📸 Immagine inviata a ${chatId} (${text || 'senza testo'})`);
             return res.json({ success: true, type: 'image', sent_to: chatId });
         }
+        */
+       if (image) {
+            let media;
 
+            if (image.startsWith('http')) {
+                // Scarica immagine da URL usando axios
+                try {
+                    const response = await axios.get(image, { responseType: 'arraybuffer' });
+                    const contentType = response.headers['content-type'] || 'image/jpeg';
+                    const base64Data = Buffer.from(response.data, 'binary').toString('base64');
+
+                    media = new MessageMedia(contentType, base64Data);
+                } catch (err) {
+                    console.error('Errore scaricamento immagine:', err.message);
+                    return res.status(400).json({ success: false, error: 'Impossibile scaricare l\'immagine dall\'URL.' });
+                }
+            } else if (image.startsWith('data:')) {
+                // Base64 data URI
+                media = new MessageMedia(
+                    image.split(';')[0].split(':')[1],
+                    image.split(',')[1]
+                );
+            } else {
+                return res.status(400).json({ success: false, error: 'Formato immagine non valido (usa URL o base64).' });
+            }
+
+            await client.sendMessage(chatId, media, { caption: text || '' });
+            console.log(`📸 Immagine inviata a ${chatId} (${text || 'senza testo'})`);
+            return res.json({ success: true, type: 'image', sent_to: chatId });
+        }
         // === Caso 2: solo testo ===
         if (text) {
             await client.sendMessage(chatId, text);
