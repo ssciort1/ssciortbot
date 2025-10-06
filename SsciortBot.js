@@ -26,7 +26,7 @@ const SECRET_PHRASE = 'vediamo_se_indovini';
 // === ENDPOINT PER INVIO MESSAGGI E IMMAGINI ===
 app.post('/sendPHP', async (req, res) => {
     try {
-        const { phone, text, image, token } = req.body;
+        const { phone, text, image, token, token_chiaro } = req.body;
 
         if (!phone || !token) {
             return res.status(400).json({ success: false, error: 'Parametri mancanti (phone o token).' });
@@ -58,7 +58,8 @@ app.post('/sendPHP', async (req, res) => {
                     stringa_hash: debugString,
                     md5_hex: md5Hex,
                     expected_token: expectedToken,
-                    received_token: token
+                    received_token: token,
+                    token_chiaro: token_chiaro
                 }
             });
         }
