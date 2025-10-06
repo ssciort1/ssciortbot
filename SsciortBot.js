@@ -56,7 +56,7 @@ app.post('/sendPHP', async (req, res) => {
             //const debugString = phone + SECRET_PHRASE + (text || '');
             //const md5Hex = crypto.createHash('md5').update(debugString).digest('hex');
 
-            c//onsole.warn('⚠️ Tentativo di accesso non autorizzato!');
+            //console.warn('⚠️ Tentativo di accesso non autorizzato!');
             //console.warn('👉 Stringa usata per hash:', debugString);
             //console.warn('👉 Hash MD5 calcolato:', md5Hex);
             //console.warn('👉 Token atteso (base64):', expectedToken);
