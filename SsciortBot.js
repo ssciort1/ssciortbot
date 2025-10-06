@@ -17,6 +17,7 @@ app.get('/', (req, res) => {
 
 const crypto = require('crypto');
 const { MessageMedia } = require('whatsapp-web.js');
+const axios = require('axios');
 app.use(express.json({ limit: '50mb' })); // per ricevere base64 o JSON grandi
 app.use(express.urlencoded({ extended: true, limit: '50mb' })); // per form-data
 
