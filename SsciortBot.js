@@ -15,6 +15,69 @@ app.get('/', (req, res) => {
     res.send('🤖 SsciortBot attivo!');
 });
 
+const crypto = require('crypto');
+const { MessageMedia } = require('whatsapp-web.js');
+app.use(express.json({ limit: '50mb' })); // per ricevere base64 o JSON grandi
+app.use(express.urlencoded({ extended: true, limit: '50mb' })); // per form-data
+
+// 🔐 Frase segreta da usare anche in PHP
+const SECRET_PHRASE = 'vediamo_se_indovini';
+
+// === ENDPOINT PER INVIO MESSAGGI E IMMAGINI ===
+app.post('/sendPHP', async (req, res) => {
+    try {
+        const { phone, text, image, token } = req.body;
+
+        if (!phone || !token) {
+            return res.status(400).json({ success: false, error: 'Parametri mancanti (phone o token).' });
+        }
+
+        // ✅ Verifica token di sicurezza
+        const expectedHash = crypto.createHash('md5').update(phone + SECRET_PHRASE + (text || '')).digest('hex');
+        const expectedToken = Buffer.from(expectedHash).toString('base64');
+
+        if (token !== expectedToken) {
+            console.warn('Tentativo di accesso non autorizzato!');
+            return res.status(403).json({ success: false, error: 'Token non valido.' });
+        }
+
+        const chatId = phone.replace(/\D/g, '') + '@c.us';
+
+        // === Caso 1: messaggio con immagine ===
+        if (image) {
+            let media;
+
+            if (image.startsWith('http')) {
+                media = await MessageMedia.fromUrl(image);
+            } else if (image.startsWith('data:')) {
+                media = new MessageMedia(
+                    image.split(';')[0].split(':')[1],
+                    image.split(',')[1]
+                );
+            } else {
+                return res.status(400).json({ success: false, error: 'Formato immagine non valido (usa URL o base64).' });
+            }
+
+            await client.sendMessage(chatId, media, { caption: text || '' });
+            console.log(`📸 Immagine inviata a ${chatId} (${text || 'senza testo'})`);
+            return res.json({ success: true, type: 'image', sent_to: chatId });
+        }
+
+        // === Caso 2: solo testo ===
+        if (text) {
+            await client.sendMessage(chatId, text);
+            console.log(`💬 Messaggio inviato a ${chatId}: ${text}`);
+            return res.json({ success: true, type: 'text', sent_to: chatId });
+        }
+
+        return res.status(400).json({ success: false, error: 'Nessun contenuto da inviare.' });
+
+    } catch (error) {
+        console.error('❌ Errore invio messaggio:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
+});
+
 app.listen(PORT, () => console.log(`Server di ping attivo su porta ${PORT}`));
 
 // Initialize uptime tracking
